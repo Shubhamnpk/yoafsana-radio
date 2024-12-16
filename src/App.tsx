@@ -100,7 +100,7 @@ function App() {
                   <Radio className="w-6 h-6 text-primary" />
                 </div>
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
-                  Yoapfsana Radio
+                  Yoafsana Radio
                 </h1>
               </motion.div>
               <div className="flex items-center gap-4">
