@@ -11,14 +11,14 @@ export const radioSources: RadioSource[] = [
     id: 'default',
     name: 'Standard Source',
     url: 'https://shubhamnpk.github.io/yoradio-api/data/',
-    isDefault: true,
+    isDefault: false,
     description: 'Primary collection of radio stations'
   },
   {
     id: 'radio-browser',
-    name: 'Radio Browser (Beta)',
+    name: 'Radio Browser (bangali)',
     url: 'https://de1.api.radio-browser.info/json/stations/bycountry/bangladesh',
-    isDefault: false,
+    isDefault: true,
     description: 'Extended collection from Radio Browser API'
   }
 ];
