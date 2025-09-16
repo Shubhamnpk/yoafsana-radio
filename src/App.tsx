@@ -1,13 +1,14 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useEffect } from 'react';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useStations } from '@/hooks/useStations';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterBar } from '@/components/FilterBar';
 
 import { StationGrid } from '@/components/StationGrid';
 const FavoritesList = lazy(() => import('@/components/favorites/preview/FavoritesList').then(module => ({ default: module.FavoritesList })));
-import { Radio, Filter } from 'lucide-react';
+import { Radio, Filter, Wifi, WifiOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { RadioStation } from '@/types/radio';
@@ -17,6 +18,7 @@ import { FloatingPlayer } from '@/components/FloatingPlayer';
 
 function App() {
   const [showSearchFilters, setShowSearchFilters] = useState(false);
+  const isOnline = useOnlineStatus();
 
   const {
     stations,
@@ -70,6 +72,13 @@ function App() {
       handlePlay(stations[currentIndex + 1]);
     }
   };
+
+  // Auto-play first station when stations are loaded and no current station
+  useEffect(() => {
+    if (!loading && stations.length > 0 && !currentStation && isOnline) {
+      handlePlay(stations[0]);
+    }
+  }, [loading, stations, currentStation, isOnline]);
 
   if (loading) {
     return (
@@ -142,6 +151,18 @@ function App() {
                 </h1>
               </motion.div>
               <div className="flex items-center gap-2 sm:gap-4">
+                <motion.div
+                  className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+                    isOnline
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                      : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                  }`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+                  <span className="hidden sm:inline">{isOnline ? 'Online' : 'Offline'}</span>
+                </motion.div>
                 <SettingsDialog />
                 <motion.p
                   initial={{ opacity: 0 }}

@@ -10,7 +10,22 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['image.png'],
-      manifest: false
+      manifest: false,
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/.*\.radio-browser\.info\/.*/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'radio-api-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 1 week
+              },
+            },
+          },
+        ],
+      },
     })
   ],
   resolve: {
