@@ -7,7 +7,7 @@ import { FilterBar } from '@/components/FilterBar';
 
 import { StationGrid } from '@/components/StationGrid';
 const FavoritesList = lazy(() => import('@/components/favorites/preview/FavoritesList').then(module => ({ default: module.FavoritesList })));
-import { Radio, Filter, Settings } from 'lucide-react';
+import { Radio, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { RadioStation } from '@/types/radio';
