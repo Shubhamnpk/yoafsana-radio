@@ -25,29 +25,23 @@ export class RadioService {
   }
 
   async fetchAllStations(): Promise<RadioStation[]> {
-    try {
-      const enabledSources = this.getEnabledSources();
-      
-      if (enabledSources.length === 0) {
-        console.warn('No radio sources enabled');
-        return [];
-      }
+    const enabledSources = this.getEnabledSources();
 
-      const stationsArrays = await Promise.all(
-        enabledSources.map(source => source.fetchStations())
-      );
-
-      // Merge and deduplicate stations
-      const mergedStations = stationsArrays.flat();
-      const uniqueStations = Array.from(
-        new Map(mergedStations.map(station => [station.id, station])).values()
-      );
-
-      return uniqueStations;
-    } catch (error) {
-      console.error('Error fetching stations:', error);
-      return [];
+    if (enabledSources.length === 0) {
+      throw new Error('No radio sources enabled');
     }
+
+    const stationsArrays = await Promise.all(
+      enabledSources.map(source => source.fetchStations())
+    );
+
+    // Merge and deduplicate stations
+    const mergedStations = stationsArrays.flat();
+    const uniqueStations = Array.from(
+      new Map(mergedStations.map(station => [station.id, station])).values()
+    );
+
+    return uniqueStations;
   }
 
   async searchStations(query: string): Promise<RadioStation[]> {

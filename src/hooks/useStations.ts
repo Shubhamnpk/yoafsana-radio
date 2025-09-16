@@ -17,23 +17,26 @@ export function useStations() {
   });
 
   const { enabledSources, radioBrowserCountry } = useSourceSettings();
+  console.log('enabledSources:', enabledSources);
 
   // Fetch stations when enabled sources change
-  useEffect(() => {
-    const fetchStations = async () => {
-      try {
-        setLoading(true);
-        const stations = await radioService.fetchAllStations();
-        setAllStations(stations);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching radio stations:', err);
-        setError('Failed to load radio stations. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchStations = async () => {
+    console.log('Fetching stations...');
+    try {
+      setLoading(true);
+      const stations = await radioService.fetchAllStations();
+      console.log('Fetched stations:', stations.length);
+      setAllStations(stations);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching radio stations:', err);
+      setError('Failed to load radio stations. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchStations();
   }, [enabledSources, radioBrowserCountry]);
 
@@ -114,5 +117,6 @@ export function useStations() {
     provinces,
     hasMore,
     loadMore,
+    refetch: fetchStations,
   };
 }

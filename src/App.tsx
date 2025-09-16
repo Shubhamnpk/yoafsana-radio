@@ -5,15 +5,15 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterBar } from '@/components/FilterBar';
 
-const StationGrid = lazy(() => import('@/components/StationGrid').then(module => ({ default: module.StationGrid })));
+import { StationGrid } from '@/components/StationGrid';
 const FavoritesList = lazy(() => import('@/components/favorites/preview/FavoritesList').then(module => ({ default: module.FavoritesList })));
 import { Radio, Filter, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { RadioStation } from '@/types/radio';
 
-const SettingsDialog = lazy(() => import('@/components/SettingsDialog').then(module => ({ default: module.SettingsDialog })));
-const FloatingPlayer = lazy(() => import('@/components/FloatingPlayer').then(module => ({ default: module.FloatingPlayer })));
+import { SettingsDialog } from '@/components/SettingsDialog';
+import { FloatingPlayer } from '@/components/FloatingPlayer';
 
 function App() {
   const [showSearchFilters, setShowSearchFilters] = useState(false);
@@ -22,11 +22,13 @@ function App() {
     stations,
     allStations,
     loading,
+    error,
     filters,
     setFilters,
     provinces,
     hasMore,
     loadMore,
+    refetch,
   } = useStations();
 
   const {
@@ -89,6 +91,35 @@ function App() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center gap-6 p-8 rounded-xl bg-card/50 backdrop-blur-lg shadow-xl border border-border/50"
+        >
+          <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+            <Radio className="w-6 h-6 text-destructive" />
+          </div>
+          <div className="space-y-2 text-center">
+            <h2 className="text-xl font-semibold">Failed to Load Stations</h2>
+            <p className="text-sm text-muted-foreground">
+              {error}
+            </p>
+            <Button
+              onClick={refetch}
+              variant="outline"
+              className="mt-4"
+            >
+              Retry
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-lg">
@@ -111,9 +142,7 @@ function App() {
                 </h1>
               </motion.div>
               <div className="flex items-center gap-2 sm:gap-4">
-                <Suspense fallback={<Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-primary/10"><Settings className="h-5 w-5" /><span className="sr-only">Settings</span></Button>}>
-                  <SettingsDialog />
-                </Suspense>
+                <SettingsDialog />
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -194,20 +223,18 @@ function App() {
             />
           </Suspense>
 
-          <Suspense fallback={<div>Loading stations...</div>}>
-            <StationGrid
-              stations={stations.filter(station => !isFavorite(station))}
-              favoriteStations={getFavoriteStations(allStations)} // Use allStations here
-              currentStation={currentStation}
-              isPlaying={isPlaying}
-              onPlay={handlePlay}
-              onPause={pause}
-              hasMore={hasMore}
-              onLoadMore={loadMore}
-              isFavorite={isFavorite}
-              onToggleFavorite={toggleFavorite}
-            />
-          </Suspense>
+          <StationGrid
+            stations={stations.filter(station => !isFavorite(station))}
+            favoriteStations={getFavoriteStations(allStations)} // Use allStations here
+            currentStation={currentStation}
+            isPlaying={isPlaying}
+            onPlay={handlePlay}
+            onPause={pause}
+            hasMore={hasMore}
+            onLoadMore={loadMore}
+            isFavorite={isFavorite}
+            onToggleFavorite={toggleFavorite}
+          />
         </motion.div>
       </main>
 
@@ -224,19 +251,17 @@ function App() {
         </div>
       </footer>
 
-      <Suspense fallback={null}>
-        <FloatingPlayer
-          currentStation={currentStation}
-          isPlaying={isPlaying}
-          volume={volume}
-          onVolumeChange={adjustVolume}
-          onTogglePlay={togglePlay}
-          onPreviousStation={currentIndex > 0 ? handlePreviousStation : undefined}
-          onNextStation={
-            currentIndex < stations.length - 1 ? handleNextStation : undefined
-          }
-        />
-      </Suspense>
+      <FloatingPlayer
+        currentStation={currentStation}
+        isPlaying={isPlaying}
+        volume={volume}
+        onVolumeChange={adjustVolume}
+        onTogglePlay={togglePlay}
+        onPreviousStation={currentIndex > 0 ? handlePreviousStation : undefined}
+        onNextStation={
+          currentIndex < stations.length - 1 ? handleNextStation : undefined
+        }
+      />
     </div>
   );
 }
