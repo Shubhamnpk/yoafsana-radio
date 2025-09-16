@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Minimize2, X, Radio as RadioIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';

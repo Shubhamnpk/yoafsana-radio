@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Radio } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RadioCard } from '@/components/cards/RadioCard';
 import { FavoriteStats } from '../stats/FavoriteStats';
@@ -20,7 +20,7 @@ interface FavoritesListProps {
 }
 
 export function FavoritesList({
-  stations,
+  stations: _stations,
   currentStation,
   isPlaying,
   onPlay,

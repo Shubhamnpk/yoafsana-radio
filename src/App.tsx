@@ -1,17 +1,19 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useStations } from '@/hooks/useStations';
 import { useFavorites } from '@/hooks/useFavorites';
-import { StationGrid } from '@/components/StationGrid';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterBar } from '@/components/FilterBar';
-import { SettingsDialog } from '@/components/SettingsDialog';
-import { FloatingPlayer } from '@/components/FloatingPlayer';
-import { FavoritesList } from '@/components/favorites/preview/FavoritesList';
-import { Radio, Search, Filter } from 'lucide-react';
+
+const StationGrid = lazy(() => import('@/components/StationGrid').then(module => ({ default: module.StationGrid })));
+const FavoritesList = lazy(() => import('@/components/favorites/preview/FavoritesList').then(module => ({ default: module.FavoritesList })));
+import { Radio, Filter, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { RadioStation } from '@/types/radio';
+
+const SettingsDialog = lazy(() => import('@/components/SettingsDialog').then(module => ({ default: module.SettingsDialog })));
+const FloatingPlayer = lazy(() => import('@/components/FloatingPlayer').then(module => ({ default: module.FloatingPlayer })));
 
 function App() {
   const [showSearchFilters, setShowSearchFilters] = useState(false);
@@ -109,7 +111,9 @@ function App() {
                 </h1>
               </motion.div>
               <div className="flex items-center gap-2 sm:gap-4">
-                <SettingsDialog />
+                <Suspense fallback={<Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-primary/10"><Settings className="h-5 w-5" /><span className="sr-only">Settings</span></Button>}>
+                  <SettingsDialog />
+                </Suspense>
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -179,27 +183,31 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-8"
         >
-          <FavoritesList
-            stations={stations}
-            currentStation={currentStation}
-            isPlaying={isPlaying}
-            onPlay={handlePlay}
-            onPause={pause}
-            allStations={allStations} // Pass allStations here
-          />
+          <Suspense fallback={<div>Loading favorites...</div>}>
+            <FavoritesList
+              stations={stations}
+              currentStation={currentStation}
+              isPlaying={isPlaying}
+              onPlay={handlePlay}
+              onPause={pause}
+              allStations={allStations} // Pass allStations here
+            />
+          </Suspense>
 
-          <StationGrid
-            stations={stations.filter(station => !isFavorite(station))}
-            favoriteStations={getFavoriteStations(allStations)} // Use allStations here
-            currentStation={currentStation}
-            isPlaying={isPlaying}
-            onPlay={handlePlay}
-            onPause={pause}
-            hasMore={hasMore}
-            onLoadMore={loadMore}
-            isFavorite={isFavorite}
-            onToggleFavorite={toggleFavorite}
-          />
+          <Suspense fallback={<div>Loading stations...</div>}>
+            <StationGrid
+              stations={stations.filter(station => !isFavorite(station))}
+              favoriteStations={getFavoriteStations(allStations)} // Use allStations here
+              currentStation={currentStation}
+              isPlaying={isPlaying}
+              onPlay={handlePlay}
+              onPause={pause}
+              hasMore={hasMore}
+              onLoadMore={loadMore}
+              isFavorite={isFavorite}
+              onToggleFavorite={toggleFavorite}
+            />
+          </Suspense>
         </motion.div>
       </main>
 
@@ -216,17 +224,19 @@ function App() {
         </div>
       </footer>
 
-      <FloatingPlayer
-        currentStation={currentStation}
-        isPlaying={isPlaying}
-        volume={volume}
-        onVolumeChange={adjustVolume}
-        onTogglePlay={togglePlay}
-        onPreviousStation={currentIndex > 0 ? handlePreviousStation : undefined}
-        onNextStation={
-          currentIndex < stations.length - 1 ? handleNextStation : undefined
-        }
-      />
+      <Suspense fallback={null}>
+        <FloatingPlayer
+          currentStation={currentStation}
+          isPlaying={isPlaying}
+          volume={volume}
+          onVolumeChange={adjustVolume}
+          onTogglePlay={togglePlay}
+          onPreviousStation={currentIndex > 0 ? handlePreviousStation : undefined}
+          onNextStation={
+            currentIndex < stations.length - 1 ? handleNextStation : undefined
+          }
+        />
+      </Suspense>
     </div>
   );
 }
