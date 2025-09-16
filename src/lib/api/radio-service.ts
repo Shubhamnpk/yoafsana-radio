@@ -3,14 +3,17 @@ import { RadioBrowserSource } from './sources/radio-browser-source';
 import type { RadioSource } from './sources/base';
 import type { RadioStation } from '@/types/radio';
 import { useSourceSettings } from '@/hooks/useSourceSettings';
+import { radioSources } from '@/config/sources';
 
 export class RadioService {
   private sources: Map<string, RadioSource>;
 
   constructor() {
+    const defaultConfig = radioSources.find(s => s.id === 'default')!;
+    const radioBrowserConfig = radioSources.find(s => s.id === 'radio-browser')!;
     this.sources = new Map([
-      ['default', new DefaultRadioSource()],
-      ['radio-browser', new RadioBrowserSource()],
+      ['default', new DefaultRadioSource(defaultConfig)],
+      ['radio-browser', new RadioBrowserSource(radioBrowserConfig)],
     ]);
   }
 

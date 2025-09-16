@@ -1,4 +1,5 @@
 import type { RadioStation } from '@/types/radio';
+import type { RadioSource as ConfigRadioSource } from '@/config/sources';
 
 export interface RadioSource {
   id: string;
@@ -8,9 +9,11 @@ export interface RadioSource {
 
 export class BaseRadioSource implements RadioSource {
   id: string;
+  config: ConfigRadioSource;
 
-  constructor(id: string) {
+  constructor(id: string, config: ConfigRadioSource) {
     this.id = id;
+    this.config = config;
   }
 
   async fetchStations(): Promise<RadioStation[]> {

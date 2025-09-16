@@ -22,11 +22,11 @@ export function ThemeSettings() {
         </div>
       </div>
 
-      <ScrollArea className="h-[200px] pr-4">
-        <div className="grid grid-cols-2 gap-4">
+      <ScrollArea className="h-[300px] sm:h-[250px] pr-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-6">
           {themes.map(({ value, label, isDark }, index) => {
             const Icon = isDark ? Moon : value === 'system' ? Laptop : Sun;
-            
+
             return (
               <motion.button
                 key={value}
@@ -34,21 +34,21 @@ export function ThemeSettings() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={cn(
-                  'flex flex-col items-center gap-3 p-4 rounded-xl border transition-all duration-200',
-                  'hover:shadow-lg',
-                  theme === value 
-                    ? 'border-primary bg-primary/10 shadow-lg' 
+                  'flex flex-col items-center gap-4 p-6 sm:p-4 rounded-xl border transition-all duration-200',
+                  'hover:shadow-lg touch-manipulation',
+                  theme === value
+                    ? 'border-primary bg-primary/10 shadow-lg'
                     : 'border-border/50 hover:border-primary/50 hover:bg-accent/50'
                 )}
                 onClick={() => setTheme(value)}
               >
                 <div className={cn(
-                  'w-12 h-12 rounded-full flex items-center justify-center transition-colors',
+                  'w-16 h-16 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-colors',
                   theme === value ? 'bg-primary text-primary-foreground' : 'bg-muted'
                 )}>
-                  <Icon className="w-6 h-6" />
+                  <Icon className="w-8 h-8 sm:w-6 sm:h-6" />
                 </div>
-                <span className="text-sm font-medium">{label}</span>
+                <span className="text-base sm:text-sm font-medium">{label}</span>
               </motion.button>
             );
           })}

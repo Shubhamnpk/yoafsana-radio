@@ -45,21 +45,21 @@ export function RadioCard({
         isCurrentStation && 'ring-2 ring-primary shadow-lg',
         'hover:shadow-xl hover:bg-card/80'
       )}>
-        <CardContent className="p-4">
-          <div className="flex items-center gap-4">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="relative shrink-0">
               {station.favicon ? (
                 <img
                   src={station.favicon}
                   alt={station.name}
-                  className="w-16 h-16 rounded-lg object-cover bg-muted"
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover bg-muted"
                   onError={(e) => {
                     e.currentTarget.src = 'https://placehold.co/64x64/374151/FFFFFF/svg?text=FM';
                   }}
                 />
               ) : (
-                <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Radio className="w-8 h-8 text-primary" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Radio className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                 </div>
               )}
               {isCurrentStation && (
@@ -74,16 +74,16 @@ export function RadioCard({
             </div>
 
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold truncate">{station.name}</h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+              <h3 className="text-base sm:text-lg font-semibold truncate">{station.name}</h3>
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mt-1">
                 {station.frequency ? (
                   <>
-                    <Radio className="w-4 h-4" />
+                    <Radio className="w-3 h-3 sm:w-4 sm:h-4" />
                     {station.frequency} MHz
                   </>
                 ) : (
                   <>
-                    <Music2 className="w-4 h-4" />
+                    <Music2 className="w-3 h-3 sm:w-4 sm:h-4" />
                     Online
                   </>
                 )}
@@ -93,7 +93,7 @@ export function RadioCard({
                   </span>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground mt-1 truncate">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
                 {station.state || station.country || station.address}
               </p>
             </div>
@@ -110,7 +110,7 @@ export function RadioCard({
                 variant={isCurrentStation ? "default" : "secondary"}
                 size="icon"
                 className={cn(
-                  "h-12 w-12 rounded-full transition-all duration-300",
+                  "h-12 w-12 sm:h-12 sm:w-12 rounded-full transition-all duration-300 touch-manipulation",
                   isCurrentStation && "bg-primary hover:bg-primary/90"
                 )}
                 onClick={handleClick}

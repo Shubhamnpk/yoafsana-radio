@@ -4,6 +4,7 @@ export interface RadioSource {
   url: string;
   isDefault: boolean;
   description: string;
+  country?: string;
 }
 
 export const radioSources: RadioSource[] = [
@@ -16,9 +17,10 @@ export const radioSources: RadioSource[] = [
   },
   {
     id: 'radio-browser',
-    name: 'Radio Browser (bangali)',
-    url: 'https://de1.api.radio-browser.info/json/stations/bycountry/bangladesh',
+    name: 'Radio Browser',
+    url: 'https://de1.api.radio-browser.info/json/stations/bycountry/',
     isDefault: true,
-    description: 'Extended collection from Radio Browser API'
+    description: 'Extended collection from Radio Browser API',
+    country: 'bangladesh'
   }
 ];

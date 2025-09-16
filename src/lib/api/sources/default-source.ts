@@ -2,8 +2,8 @@ import { BaseRadioSource } from './base';
 import type { RadioStation } from '@/types/radio';
 
 export class DefaultRadioSource extends BaseRadioSource {
-  constructor() {
-    super('default');
+  constructor(config: any) {
+    super('default', config);
   }
 
   async fetchStations(): Promise<RadioStation[]> {

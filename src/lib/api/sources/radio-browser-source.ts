@@ -1,17 +1,20 @@
 import { BaseRadioSource } from './base';
 import type { RadioStation, RadioBrowserStation } from '@/types/radio';
 import { transformRadioBrowserStation } from '@/lib/transformers/radio-browser';
+import { useSourceSettings } from '@/hooks/useSourceSettings';
 
 const RADIO_BROWSER_BASE_URL = 'https://de1.api.radio-browser.info/json';
 
 export class RadioBrowserSource extends BaseRadioSource {
-  constructor() {
-    super('radio-browser');
+  constructor(config: any) {
+    super('radio-browser', config);
   }
 
   async fetchStations(): Promise<RadioStation[]> {
     try {
-      const response = await fetch(`${RADIO_BROWSER_BASE_URL}/stations/bycountry/bangladesh`);
+      const { radioBrowserCountry } = useSourceSettings.getState();
+      const country = radioBrowserCountry || this.config.country || 'bangladesh';
+      const response = await fetch(`${RADIO_BROWSER_BASE_URL}/stations/bycountry/${country}`);
       if (!response.ok) throw new Error('Failed to fetch stations');
       
       const stations: RadioBrowserStation[] = await response.json();

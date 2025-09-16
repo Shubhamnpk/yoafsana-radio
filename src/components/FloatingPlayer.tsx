@@ -52,12 +52,12 @@ export function FloatingPlayer({
         exit={{ y: 100, opacity: 0 }}
         className="fixed inset-0 pointer-events-none z-[9999]"
       >
-        <div className="absolute bottom-6 right-6 pointer-events-auto">
+        <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:right-6 sm:left-auto pointer-events-auto">
           {isMinimized ? (
             <Button
               variant="default"
               size="lg"
-              className="rounded-full p-6 shadow-lg hover:shadow-xl transition-shadow glass-morphism"
+              className="w-full sm:w-auto rounded-full p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow glass-morphism"
               onClick={maximize}
             >
               <RadioIcon className={`w-6 h-6 ${isPlaying ? 'animate-pulse' : ''}`} />
@@ -66,7 +66,7 @@ export function FloatingPlayer({
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="w-[380px] glass-morphism rounded-xl shadow-2xl"
+              className="w-full sm:w-[380px] glass-morphism rounded-xl shadow-2xl max-h-[80vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between p-3 border-b border-border/10">
                 <div className="flex items-center gap-2">

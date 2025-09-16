@@ -40,13 +40,13 @@ export function StationGrid({
   }
 
   return (
-    <div className="space-y-10">
-      <div className="space-y-8">
-        <h2 className="text-3xl font-bold text-gradient">
+    <div className="mobile-spacing">
+      <div className="mobile-spacing">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gradient">
           All Stations
         </h2>
-        <motion.div 
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        <motion.div
+          className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ staggerChildren: 0.1 }}

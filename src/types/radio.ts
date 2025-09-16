@@ -55,4 +55,5 @@ export interface FilterState {
   sortBy: SortOption;
   language?: string;
   codec?: string;
+  country?: string;
 }

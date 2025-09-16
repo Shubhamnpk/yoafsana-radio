@@ -16,7 +16,7 @@ export function useStations() {
     sortBy: 'name',
   });
 
-  const { enabledSources } = useSourceSettings();
+  const { enabledSources, radioBrowserCountry } = useSourceSettings();
 
   // Fetch stations when enabled sources change
   useEffect(() => {
@@ -35,22 +35,30 @@ export function useStations() {
     };
 
     fetchStations();
-  }, [enabledSources]);
+  }, [enabledSources, radioBrowserCountry]);
+
+  // Sync country filter with settings
+  useEffect(() => {
+    if (radioBrowserCountry && radioBrowserCountry !== filters.country) {
+      setFilters(prev => ({ ...prev, country: radioBrowserCountry }));
+    }
+  }, [radioBrowserCountry, filters.country]);
 
   // Filter and sort stations
   const filteredStations = useMemo(() => {
     return allStations
       .filter((station) => {
-        const matchesSearch = !filters.search || 
+        const matchesSearch = !filters.search ||
           station.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-          station.tags?.some(tag => 
+          station.tags?.some(tag =>
             tag.toLowerCase().includes(filters.search.toLowerCase())
           ) ||
           station.state?.toLowerCase().includes(filters.search.toLowerCase()) ||
           station.country?.toLowerCase().includes(filters.search.toLowerCase());
 
         const matchesProvince = !filters.province || station.province === filters.province;
-        return matchesSearch && matchesProvince;
+        const matchesCountry = !filters.country || station.country?.toLowerCase() === filters.country.toLowerCase();
+        return matchesSearch && matchesProvince && matchesCountry;
       })
       .sort((a, b) => {
         switch (filters.sortBy) {

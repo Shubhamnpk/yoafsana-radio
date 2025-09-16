@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ThemeSettings } from '@/components/settings/ThemeSettings';
 import { SourceSettings } from '@/components/settings/SourceSettings';
+import { AboutSettings } from '@/components/settings/AboutSettings';
 import { motion } from 'framer-motion';
 
 export function SettingsDialog() {
@@ -26,7 +27,7 @@ export function SettingsDialog() {
           <span className="sr-only">Settings</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] h-[85vh] p-0">
+      <DialogContent className="w-full h-full sm:h-[90vh] sm:max-w-[600px] p-0">
         <DialogHeader className="p-6 pb-4">
           <DialogTitle className="text-2xl flex items-center gap-2">
             <div className="p-2 rounded-lg bg-primary/10">
@@ -40,9 +41,10 @@ export function SettingsDialog() {
 
         <Tabs defaultValue="theme" className="flex-1 overflow-hidden">
           <div className="px-6">
-            <TabsList className="grid w-full grid-cols-2 p-1 bg-muted/50">
+            <TabsList className="grid w-full grid-cols-3 p-1 bg-muted/50">
               <TabsTrigger value="theme">Appearance</TabsTrigger>
               <TabsTrigger value="sources">Sources</TabsTrigger>
+              <TabsTrigger value="about">About</TabsTrigger>
             </TabsList>
           </div>
 
@@ -57,6 +59,11 @@ export function SettingsDialog() {
               </TabsContent>
               <TabsContent value="sources" className="mt-0">
                 <SourceSettings />
+              </TabsContent>
+              <TabsContent value="about" className="mt-0">
+                <ScrollArea className="h-[60vh] sm:h-[50vh]">
+                  <AboutSettings />
+                </ScrollArea>
               </TabsContent>
             </motion.div>
           </ScrollArea>

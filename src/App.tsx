@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useStations } from '@/hooks/useStations';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -7,10 +8,14 @@ import { FilterBar } from '@/components/FilterBar';
 import { SettingsDialog } from '@/components/SettingsDialog';
 import { FloatingPlayer } from '@/components/FloatingPlayer';
 import { FavoritesList } from '@/components/favorites/preview/FavoritesList';
-import { Radio } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Radio, Search, Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { RadioStation } from '@/types/radio';
 
 function App() {
+  const [showSearchFilters, setShowSearchFilters] = useState(false);
+
   const {
     stations,
     allStations,
@@ -85,54 +90,90 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-lg">
-        <div className="container mx-auto px-4 py-4">
-          <motion.div 
+        <div className="container mx-auto px-4 py-3 sm:py-4">
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-3 sm:gap-4"
           >
             <div className="flex items-center justify-between">
-              <motion.div 
-                className="flex items-center gap-3"
+              <motion.div
+                className="flex items-center gap-2 sm:gap-3"
                 whileHover={{ scale: 1.02 }}
               >
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Radio className="w-6 h-6 text-primary" />
+                <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+                  <Radio className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
+                <h1 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
                   Yoafsana Radio
                 </h1>
               </motion.div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 <SettingsDialog />
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full"
+                  className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full hidden sm:block"
                 >
                   {stations.length} stations available
                 </motion.p>
               </div>
             </div>
             
-            <div className="grid gap-4 md:grid-cols-[1fr,auto]">
+            <div className="flex flex-col gap-4">
               <SearchBar
                 value={filters.search}
                 onChange={(search) => setFilters({ ...filters, search })}
               />
-              <FilterBar
-                filters={filters}
-                onFilterChange={(newFilters) =>
-                  setFilters({ ...filters, ...newFilters })
-                }
-                provinces={provinces}
-              />
+
+              <div className="flex items-center justify-between sm:hidden">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSearchFilters(!showSearchFilters)}
+                  className="flex items-center gap-2"
+                >
+                  <Filter className="w-4 h-4" />
+                  {showSearchFilters ? 'Hide' : 'Show'} Filters
+                </Button>
+              </div>
+
+              <AnimatePresence>
+                {showSearchFilters && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="sm:hidden overflow-hidden"
+                  >
+                    <div className="pt-4 border-t border-border/50">
+                      <FilterBar
+                        filters={filters}
+                        onFilterChange={(newFilters) =>
+                          setFilters({ ...filters, ...newFilters })
+                        }
+                        provinces={provinces}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="hidden sm:block">
+                <FilterBar
+                  filters={filters}
+                  onFilterChange={(newFilters) =>
+                    setFilters({ ...filters, ...newFilters })
+                  }
+                  provinces={provinces}
+                />
+              </div>
             </div>
           </motion.div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto mobile-padding py-6 sm:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -148,7 +189,7 @@ function App() {
           />
 
           <StationGrid
-            stations={stations}
+            stations={stations.filter(station => !isFavorite(station))}
             favoriteStations={getFavoriteStations(allStations)} // Use allStations here
             currentStation={currentStation}
             isPlaying={isPlaying}
@@ -161,6 +202,19 @@ function App() {
           />
         </motion.div>
       </main>
+
+      <footer className="border-t bg-background/80 backdrop-blur-lg">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col items-center justify-center gap-2 text-center">
+            <p className="text-sm text-muted-foreground">
+              Fork of YoRadio
+            </p>
+            <p className="text-xs text-muted-foreground">
+              A personalized radio streaming experience
+            </p>
+          </div>
+        </div>
+      </footer>
 
       <FloatingPlayer
         currentStation={currentStation}
