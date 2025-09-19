@@ -15,6 +15,7 @@ import type { RadioStation } from '@/types/radio';
 
 import { SettingsDialog } from '@/components/SettingsDialog';
 import { FloatingPlayer } from '@/components/FloatingPlayer';
+import { UpdateNotification } from '@/components/UpdateNotification';
 
 function App() {
   const [showSearchFilters, setShowSearchFilters] = useState(false);
@@ -73,64 +74,133 @@ function App() {
     }
   };
 
-  // Auto-play first station when stations are loaded and no current station
-  useEffect(() => {
-    if (!loading && stations.length > 0 && !currentStation && isOnline) {
-      handlePlay(stations[0]);
-    }
-  }, [loading, stations, currentStation, isOnline]);
+  // Auto-play disabled - users must manually select a station to play
+  // useEffect(() => {
+  //   if (!loading && stations.length > 0 && !currentStation && isOnline) {
+  //     handlePlay(stations[0]);
+  //   }
+  // }, [loading, stations, currentStation, isOnline]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center gap-6 p-8 rounded-xl bg-card/50 backdrop-blur-lg shadow-xl border border-border/50"
-        >
-          <Radio className="w-12 h-12 text-primary animate-pulse" />
-          <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold">Loading Your Stations</h2>
-            <p className="text-sm text-muted-foreground">
-              Preparing your personalized radio experience...
-            </p>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+        <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-lg">
+          <div className="container mx-auto px-4 py-3 sm:py-4">
+            <div className="flex items-center justify-between">
+              <motion.div
+                className="flex items-center gap-2 sm:gap-3"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+                  <Radio className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                </div>
+                <h1 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
+                  Yoafsana Radio
+                </h1>
+              </motion.div>
+              <div className="flex items-center gap-2 sm:gap-4">
+                <motion.div
+                  className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+                    isOnline
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                      : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                  }`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+                  <span className="hidden sm:inline">{isOnline ? 'Online' : 'Offline'}</span>
+                </motion.div>
+                <SettingsDialog />
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </header>
+        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-6 p-8 rounded-xl bg-card/50 backdrop-blur-lg shadow-xl border border-border/50"
+          >
+            <Radio className="w-12 h-12 text-primary animate-pulse" />
+            <div className="space-y-2 text-center">
+              <h2 className="text-xl font-semibold">Loading Your Stations</h2>
+              <p className="text-sm text-muted-foreground">
+                Preparing your personalized radio experience...
+              </p>
+            </div>
+          </motion.div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center gap-6 p-8 rounded-xl bg-card/50 backdrop-blur-lg shadow-xl border border-border/50"
-        >
-          <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-            <Radio className="w-6 h-6 text-destructive" />
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+        <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-lg">
+          <div className="container mx-auto px-4 py-3 sm:py-4">
+            <div className="flex items-center justify-between">
+              <motion.div
+                className="flex items-center gap-2 sm:gap-3"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+                  <Radio className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                </div>
+                <h1 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
+                  Yoafsana Radio
+                </h1>
+              </motion.div>
+              <div className="flex items-center gap-2 sm:gap-4">
+                <motion.div
+                  className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+                    isOnline
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                      : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                  }`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+                  <span className="hidden sm:inline">{isOnline ? 'Online' : 'Offline'}</span>
+                </motion.div>
+                <SettingsDialog />
+              </div>
+            </div>
           </div>
-          <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold">Failed to Load Stations</h2>
-            <p className="text-sm text-muted-foreground">
-              {error}
-            </p>
-            <Button
-              onClick={refetch}
-              variant="outline"
-              className="mt-4"
-            >
-              Retry
-            </Button>
-          </div>
-        </motion.div>
+        </header>
+        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center gap-6 p-8 rounded-xl bg-card/50 backdrop-blur-lg shadow-xl border border-border/50"
+          >
+            <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+              <Radio className="w-6 h-6 text-destructive" />
+            </div>
+            <div className="space-y-2 text-center">
+              <h2 className="text-xl font-semibold">Failed to Load Stations</h2>
+              <p className="text-sm text-muted-foreground">
+                {error}
+              </p>
+              <Button
+                onClick={refetch}
+                variant="outline"
+                className="mt-4"
+              >
+                Retry
+              </Button>
+            </div>
+          </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+      <UpdateNotification />
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-lg">
         <div className="container mx-auto px-4 py-3 sm:py-4">
           <motion.div
@@ -282,6 +352,8 @@ function App() {
         onNextStation={
           currentIndex < stations.length - 1 ? handleNextStation : undefined
         }
+        stations={stations}
+        onStationSelect={handlePlay}
       />
     </div>
   );

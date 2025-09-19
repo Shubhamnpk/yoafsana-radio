@@ -59,7 +59,7 @@ const countries = [
 ];
 
 export function SourceSettings() {
-  const { enabledSources, toggleSource, radioBrowserCountry, setRadioBrowserCountry } = useSourceSettings();
+  const { enabledSources, toggleSource, radioBrowserCountry, setRadioBrowserCountry, standardSourceMode, setStandardSourceMode } = useSourceSettings();
 
   return (
     <div className="space-y-6">
@@ -71,7 +71,7 @@ export function SourceSettings() {
         <p className="text-sm text-muted-foreground mt-2">Configure your radio station sources and preferences</p>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid gap-6 md:grid-cols-2">
         {radioSources.map((source, index) => (
           <motion.div
             key={source.id}
@@ -111,7 +111,7 @@ export function SourceSettings() {
                 onCheckedChange={() => toggleSource(source.id)}
                 className="data-[state=checked]:bg-primary mt-1"
               />
-              {source.id === 'radio-browser' && (
+              {source.id === 'default' && enabledSources.includes('default') && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -120,35 +120,66 @@ export function SourceSettings() {
                   className="mt-4 p-4 rounded-lg bg-muted/30 border border-border/50 space-y-3"
                 >
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-primary" />
+                    <Globe className="w-4 h-4 text-primary" />
                     <Label className="text-sm font-medium text-primary">
-                      Country Selection
+                      Source Mode
                     </Label>
                   </div>
-                  <Select value={radioBrowserCountry} onValueChange={setRadioBrowserCountry}>
-                    <SelectTrigger className="w-full bg-background/50 hover:bg-background/70 transition-colors">
-                      <SelectValue placeholder="Choose a country..." />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-60">
-                      {countries.map((country) => (
-                        <SelectItem
-                          key={country.value}
-                          value={country.value}
-                          className="cursor-pointer hover:bg-accent"
-                        >
-                          {country.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center gap-3">
+                    <Label htmlFor="production-mode" className="text-sm">Production</Label>
+                    <Switch
+                      id="production-mode"
+                      checked={standardSourceMode === 'beta'}
+                      onCheckedChange={(checked) => setStandardSourceMode(checked ? 'beta' : 'production')}
+                      className="data-[state=checked]:bg-orange-500"
+                    />
+                    <Label htmlFor="production-mode" className="text-sm">Beta</Label>
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    Select the country for Radio Browser stations. Default: Bangladesh
+                    Production uses active stations. Beta includes the full index for more options.
                   </p>
                 </motion.div>
               )}
             </div>
           </motion.div>
         ))}
+
+        {enabledSources.includes('radio-browser') && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: radioSources.length * 0.1 }}
+            className="p-6 sm:p-4 rounded-xl bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm border border-border/50 hover:shadow-lg hover:border-primary/20 transition-all duration-300 touch-manipulation"
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <MapPin className="w-5 h-5 text-primary" />
+              <Label className="text-base sm:text-sm font-medium text-primary">
+                Country Selection for Radio Browser
+              </Label>
+            </div>
+            <div className="space-y-3">
+              <Select value={radioBrowserCountry} onValueChange={setRadioBrowserCountry}>
+                <SelectTrigger className="w-full bg-background/50 hover:bg-background/70 transition-colors">
+                  <SelectValue placeholder="Choose a country..." />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {countries.map((country) => (
+                    <SelectItem
+                      key={country.value}
+                      value={country.value}
+                      className="cursor-pointer hover:bg-accent"
+                    >
+                      {country.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Select the country for Radio Browser stations. Default: Bangladesh
+              </p>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

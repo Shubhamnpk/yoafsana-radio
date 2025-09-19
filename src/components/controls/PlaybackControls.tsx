@@ -38,9 +38,9 @@ export function PlaybackControls({
           disabled={disabled}
         >
           {isPlaying ? (
-            <Pause className="h-6 w-6" />
+            <Pause className="h-6 w-6 text-white" />
           ) : (
-            <Play className="h-6 w-6" />
+            <Play className="h-6 w-6 text-white" />
           )}
         </Button>
       </motion.div>

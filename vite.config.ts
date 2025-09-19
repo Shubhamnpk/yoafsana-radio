@@ -10,7 +10,29 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['image.png'],
-      manifest: false,
+      manifest: {
+        name: 'Yoafsana Radio',
+        short_name: 'Yoafsana Radio',
+        description: 'A modern radio streaming app',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        orientation: 'portrait',
+        scope: '/',
+        start_url: '/',
+        icons: [
+          {
+            src: 'image.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'image.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      },
       workbox: {
         runtimeCaching: [
           {
