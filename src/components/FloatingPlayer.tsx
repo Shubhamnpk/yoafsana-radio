@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { RadioDisplay } from '@/components/display/RadioDisplay';
 import { FullScreenDisplay } from '@/components/display/FullScreenDisplay';
 import { AudioControls } from '@/components/controls/AudioControls';
-import { FullScreenControls } from '@/components/controls/FullScreenControls';
 import type { RadioStation } from '@/types/radio';
 import { useFloatingPlayer } from '@/hooks/useFloatingPlayer';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';

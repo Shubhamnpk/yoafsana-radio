@@ -1,6 +1,7 @@
 import { BaseRadioSource } from './base';
 import type { RadioStation } from '@/types/radio';
 import { useSourceSettings } from '@/hooks/useSourceSettings';
+import { transformDefaultStation } from '@/lib/transformers/default';
 
 export class DefaultRadioSource extends BaseRadioSource {
   constructor(config: any) {
@@ -35,8 +36,11 @@ export class DefaultRadioSource extends BaseRadioSource {
       const results = await Promise.all(fetchPromises);
       const allStations = results.flat();
 
+      // Transform stations to match RadioStation interface
+      const transformedStations = allStations.map(transformDefaultStation);
+
       // Remove duplicates based on station ID
-      const uniqueStations = allStations.filter((station, index, self) =>
+      const uniqueStations = transformedStations.filter((station, index, self) =>
         index === self.findIndex(s => s.id === station.id)
       );
 

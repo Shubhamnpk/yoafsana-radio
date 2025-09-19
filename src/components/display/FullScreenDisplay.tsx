@@ -1,12 +1,8 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Radio, Music, Wifi, WifiOff, Volume2, Signal, Play, Pause, ChevronDown, ChevronUp } from 'lucide-react';
+import { Music, Wifi, WifiOff, Volume2, Signal } from 'lucide-react';
 import type { RadioStation } from '@/types/radio';
 import { AudioSpectrum } from './AudioSpectrum';
-import { SignalIndicator } from './SignalIndicator';
 import { FullScreenControls } from '../controls/FullScreenControls';
-import { FullScreenStationCard } from './FullScreenStationCard';
-import { Button } from '../ui/button';
 import { formatFrequency } from '@/lib/utils';
 
 interface FullScreenDisplayProps {
@@ -34,7 +30,6 @@ export function FullScreenDisplay({
   stations = [],
   onStationSelect
 }: FullScreenDisplayProps) {
-  const [showAllStations, setShowAllStations] = useState(false);
   if (!currentStation) {
     return (
       <div className="relative flex flex-col items-center justify-center h-full bg-background overflow-hidden">

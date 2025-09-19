@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useEffect } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useStations } from '@/hooks/useStations';
 import { useFavorites } from '@/hooks/useFavorites';

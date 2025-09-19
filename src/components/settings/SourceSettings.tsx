@@ -81,7 +81,7 @@ export function SourceSettings() {
             className="p-6 sm:p-4 rounded-xl bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm border border-border/50 hover:shadow-lg hover:border-primary/20 transition-all duration-300 touch-manipulation"
           >
             <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-3">
                 <div className="flex items-center gap-2">
                   {source.id === 'default' ? <Database className="w-5 h-5 text-primary" /> : <Globe className="w-5 h-5 text-primary" />}
                   <Label htmlFor={source.id} className="text-base sm:text-sm font-medium">
@@ -104,6 +104,76 @@ export function SourceSettings() {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {source.description}
                 </p>
+
+                {/* Integrated mode selection for default source */}
+                {source.id === 'default' && enabledSources.includes('default') && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="pt-3 border-t border-border/30 space-y-3"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-primary" />
+                      <Label className="text-sm font-medium text-primary">
+                        Source Mode
+                      </Label>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Label htmlFor={`${source.id}-production-mode`} className="text-sm">Production</Label>
+                        <Switch
+                          id={`${source.id}-production-mode`}
+                          checked={standardSourceMode === 'beta'}
+                          onCheckedChange={(checked) => setStandardSourceMode(checked ? 'beta' : 'production')}
+                          className="data-[state=checked]:bg-orange-500"
+                        />
+                        <Label htmlFor={`${source.id}-production-mode`} className="text-sm">Beta</Label>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Production uses active stations. Beta includes the full index for more options.
+                    </p>
+                  </motion.div>
+                )}
+
+                {/* Integrated country selection for radio-browser source */}
+                {source.id === 'radio-browser' && enabledSources.includes('radio-browser') && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="pt-3 border-t border-border/30 space-y-3"
+                  >
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-primary" />
+                      <Label className="text-sm font-medium text-primary">
+                        Country Selection
+                      </Label>
+                    </div>
+                    <div className="space-y-2">
+                      <Select value={radioBrowserCountry} onValueChange={setRadioBrowserCountry}>
+                        <SelectTrigger className="w-full bg-background/50 hover:bg-background/70 transition-colors">
+                          <SelectValue placeholder="Choose a country..." />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {countries.map((country) => (
+                            <SelectItem
+                              key={country.value}
+                              value={country.value}
+                              className="cursor-pointer hover:bg-accent"
+                            >
+                              {country.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        Select the country for Radio Browser stations. Default: Bangladesh
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
               </div>
               <Switch
                 id={source.id}
@@ -111,75 +181,10 @@ export function SourceSettings() {
                 onCheckedChange={() => toggleSource(source.id)}
                 className="data-[state=checked]:bg-primary mt-1"
               />
-              {source.id === 'default' && enabledSources.includes('default') && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-4 p-4 rounded-lg bg-muted/30 border border-border/50 space-y-3"
-                >
-                  <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-primary" />
-                    <Label className="text-sm font-medium text-primary">
-                      Source Mode
-                    </Label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Label htmlFor="production-mode" className="text-sm">Production</Label>
-                    <Switch
-                      id="production-mode"
-                      checked={standardSourceMode === 'beta'}
-                      onCheckedChange={(checked) => setStandardSourceMode(checked ? 'beta' : 'production')}
-                      className="data-[state=checked]:bg-orange-500"
-                    />
-                    <Label htmlFor="production-mode" className="text-sm">Beta</Label>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Production uses active stations. Beta includes the full index for more options.
-                  </p>
-                </motion.div>
-              )}
             </div>
           </motion.div>
         ))}
 
-        {enabledSources.includes('radio-browser') && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: radioSources.length * 0.1 }}
-            className="p-6 sm:p-4 rounded-xl bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm border border-border/50 hover:shadow-lg hover:border-primary/20 transition-all duration-300 touch-manipulation"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <MapPin className="w-5 h-5 text-primary" />
-              <Label className="text-base sm:text-sm font-medium text-primary">
-                Country Selection for Radio Browser
-              </Label>
-            </div>
-            <div className="space-y-3">
-              <Select value={radioBrowserCountry} onValueChange={setRadioBrowserCountry}>
-                <SelectTrigger className="w-full bg-background/50 hover:bg-background/70 transition-colors">
-                  <SelectValue placeholder="Choose a country..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-60">
-                  {countries.map((country) => (
-                    <SelectItem
-                      key={country.value}
-                      value={country.value}
-                      className="cursor-pointer hover:bg-accent"
-                    >
-                      {country.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                Select the country for Radio Browser stations. Default: Bangladesh
-              </p>
-            </div>
-          </motion.div>
-        )}
       </div>
     </div>
   );
